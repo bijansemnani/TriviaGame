@@ -6,24 +6,29 @@ $(document).ready(function() {
   var timer = 10;
   var index;
   var isEnd = false;
+  var length;
+  var endCount = 0;
   initializeArray();
 
-  console.log(randQuestion);
 
   function initializeArray() {
     questions = [{text:"What color is the sky?",
                   options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue"
+                  answer: "blue",
+                  answered: false
                  },
                  {text:"What color is the ground?",
                   options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue"
+                  answer: "blue",
+                  answered: false
                  },
                  {text:"What color is the tree?",
                   options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue"
+                  answer: "blue",
+                  answered: false
                  }
     ];
+    length = questions.length;
     $("#questions").html("<button id='start' \
       class='startButton'>Start</button>");
   }
@@ -36,9 +41,22 @@ $(document).ready(function() {
     }
     index = Math.floor(Math.random()*questions.length);
     randQuestion = questions[index];
+reCheck:
+      if(questions[index].answered === false){
+      randQuestion = questions[index];
+      questions[index].answered = true;
+      endCount++;
+    } else{
+      index = Math.floor(Math.random()*questions.length);
+      break reCheck;
+    }
+    if(endCount === length){
+      $("#questions").html("Out of Questions");
+    }
     $("#questions").html(randQuestion.text);
     for (var i = 0; i < randQuestion.options.length; i++) {
-      $("#questions").append("<br> <button id='options' class='options'>"+randQuestion.options[i] +
+      $("#questions").append("<br> <button id='options' \
+      class='options'>"+randQuestion.options[i] +
       "</button><br>");
     }
 
@@ -73,10 +91,10 @@ $(document).ready(function() {
   $("#questions").on("click","button.options", function () {
     opt = $(this).text();
     if(opt === randQuestion.answer){
+      correct();
       clearInterval(intervalId);
-      setTimeout(correct, 4000);
+      setTimeout(initialize, 4000);
       isEnd = true;
-      initialize();
     }
   });
 
