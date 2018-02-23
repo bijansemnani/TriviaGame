@@ -3,6 +3,9 @@ $(document).ready(function() {
   var randQuestion;
   var opt;
   var intervalId;
+  var timer = 10;
+  var index;
+  var isEnd = false;
   initializeArray();
 
   console.log(randQuestion);
@@ -25,7 +28,14 @@ $(document).ready(function() {
       class='startButton'>Start</button>");
   }
   function initialize() {
-    randQuestion = questions[Math.floor(Math.random()*questions.length)];
+    if(isEnd){
+      clearInterval(intervalId);
+      timer = 10;
+      intervalId = setInterval(decrement, 1000);
+      isEnd = false;
+    }
+    index = Math.floor(Math.random()*questions.length);
+    randQuestion = questions[index];
     $("#questions").html(randQuestion.text);
     for (var i = 0; i < randQuestion.options.length; i++) {
       $("#questions").append("<br> <button id='options' class='options'>"+randQuestion.options[i] +
@@ -34,19 +44,39 @@ $(document).ready(function() {
 
   }
 
+  function decrement() {
 
+    //  Decrease number by one.
+    timer--;
+    $("#timer").html("Time left: "+timer);
+    if(timer === 0){
+      console.log("times up");
+      //questions.splice(index,1);
+      isEnd = true;
+      clearInterval(intervalId);
+      initialize();
+    }
+  }
+
+  function correct() {
+    console.log("here");
+    $("#questions").html("CORRECT!!!");
+  }
 
 
   $("#start").on("click", function () {
-    intervalId = setInterval(initialize, 2000);
-
+    intervalId = setInterval(decrement, 1000);
+    initialize();
 
   });
 
   $("#questions").on("click","button.options", function () {
     opt = $(this).text();
     if(opt === randQuestion.answer){
-      console.log("correct");
+      clearInterval(intervalId);
+      setTimeout(correct, 4000);
+      isEnd = true;
+      initialize();
     }
   });
 
