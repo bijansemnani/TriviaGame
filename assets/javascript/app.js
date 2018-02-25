@@ -8,78 +8,90 @@ $(document).ready(function() {
   var isEnd = false;
   var length;
   var endCount = 0;
+  var isTimeUp = false;
   initializeArray();
 
 
   function initializeArray() {
-    questions = [{text:"What color is the sky?",
-                  options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue",
-                  answered: false
-                 },
-                 {text:"What color is the ground?",
-                  options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue",
-                  answered: false
-                 },
-                 {text:"What color is the tree?",
-                  options: ["white", "blue", "green", "lemonchiffon"],
-                  answer: "blue",
-                  answered: false
-                 }
-    ];
+     $.ajax({
+        url: "https://opentdb.com/api.php?amount=10&category=9&type=multiple",
+        method: "GET"
+      }).then(function (response) {
+        questions = response.results;
+        console.log(questions);
+      });
+    // questions = [{text:"What color is the sky?",
+    //               incorrect_answers: ["white", "blue", "green", "lemonchiffon"],
+    //               answer: "blue",
+    //               answered: false
+    //              },
+    //              {text:"What color is the ground?",
+    //               incorrect_answers: ["white", "blue", "green", "lemonchiffon"],
+    //               answer: "blue",
+    //               answered: false
+    //              },
+    //              {text:"What color is the tree?",
+    //               incorrect_answers: ["white", "blue", "green", "lemonchiffon"],
+    //               answer: "blue",
+    //               answered: false
+    //              }
+    // ];
     length = questions.length;
     $("#questions").html("<button id='start' \
       class='startButton'>Start</button>");
   }
   function initialize() {
-    if(isEnd){
+    if(questions.length < 1){
       clearInterval(intervalId);
-      timer = 10;
-      intervalId = setInterval(decrement, 1000);
-      isEnd = false;
+      $("#questions").html("Out of Questions.")
     }
-    index = Math.floor(Math.random()*questions.length);
-    randQuestion = questions[index];
-reCheck:
-      if(questions[index].answered === false){
-      randQuestion = questions[index];
-      questions[index].answered = true;
-      endCount++;
-    } else{
+    else {
+      if(isEnd){
+        clearInterval(intervalId);
+        timer = 10;
+        intervalId = setInterval(decrement, 1000);
+        isEnd = false;
+      }
       index = Math.floor(Math.random()*questions.length);
-      break reCheck;
+      randQuestion = questions[index];
+      questions.splice(index, 1);
+      console.log(questions);
+      randQuestion.incorrect_answers.push(randQuestion.correct_answer);
+      $("#questions").html(randQuestion.question);
+      for (var i = 0; i < randQuestion.incorrect_answers.length; i++) {
+        $("#questions").append("<br> <button id='options' \
+        class='options'>"+randQuestion.incorrect_answers[i] +
+        "</button><br>");
+      }
     }
-    if(endCount === length){
-      $("#questions").html("Out of Questions");
-    }
-    $("#questions").html(randQuestion.text);
-    for (var i = 0; i < randQuestion.options.length; i++) {
-      $("#questions").append("<br> <button id='options' \
-      class='options'>"+randQuestion.options[i] +
-      "</button><br>");
-    }
-
   }
 
   function decrement() {
-
     //  Decrease number by one.
     timer--;
     $("#timer").html("Time left: "+timer);
     if(timer === 0){
-      console.log("times up");
-      //questions.splice(index,1);
-      isEnd = true;
-      clearInterval(intervalId);
-      initialize();
+      $("#questions").html("times up!!!");
+      $("#questions").append("Correct answer: "
+      + randQuestion.correct_answer);
+      timesUp();
     }
+
   }
 
-  function correct() {
+  function timesUp() {
+    isEnd = true;
     console.log("here");
-    $("#questions").html("CORRECT!!!");
+    clearInterval(intervalId);
+    timer = 4;
+    intervalId = setInterval(function () {
+      $("#timer").html("Time left: "+timer);
+      timer--;
+    }, 1000);
+    setTimeout(initialize, 4000);
   }
+
+
 
 
   $("#start").on("click", function () {
@@ -90,11 +102,15 @@ reCheck:
 
   $("#questions").on("click","button.options", function () {
     opt = $(this).text();
-    if(opt === randQuestion.answer){
-      correct();
-      clearInterval(intervalId);
-      setTimeout(initialize, 4000);
-      isEnd = true;
+    if(opt === randQuestion.correct_answer){
+      $("#questions").html("CORRECT!!!");
+      timesUp();
+    }
+    else {
+      $("#questions").html("INCORRECT <br>");
+      $("#questions").append("Correct answer: "
+      + randQuestion.correct_answer);
+      timesUp();
     }
   });
 
