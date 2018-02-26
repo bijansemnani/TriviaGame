@@ -23,7 +23,7 @@ $(document).ready(function() {
       });
     length = questions.length;
     $("#questions").html("<button id='start' \
-      class='startButton'>Start</button>");
+      class='btn-lg btn-primary startButton'>START</button>");
   }
 
   function initialize() {
@@ -51,7 +51,7 @@ $(document).ready(function() {
       $("#questions").html(randQuestion.question);
       for (var i = 0; i < randQuestion.incorrect_answers.length; i++) {
         $("#questions").append("<br> <button id='options' \
-        class='options'>"+randQuestion.incorrect_answers[i] +
+        class='btn-primary options'>"+randQuestion.incorrect_answers[i] +
         "</button><br>");
       }
     }
@@ -82,9 +82,6 @@ $(document).ready(function() {
     }, 1000);
     setTimeout(initialize, 4000);
   }
-
-
-
 
   $("#start").on("click", function () {
     intervalId = setInterval(decrement, 1000);

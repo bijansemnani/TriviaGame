@@ -1,9 +1,28 @@
 .questions{
+  font-size: 30px;
+  color: white;
   text-align: center;
 }
 .timer{
   text-align: center;
+  font-size: 20px;
+  color: white;
 }
 body{
   background-image: url("http://www.lonelyplanet.com/travel-blog/tip-article/wordpress_uploads/2017/08/shutterstock_611229743-bde2e023e33c.jpg");
+}
+
+h1{
+  opacity: .5;
+}
+
+#start{
+    font-size: 40px;
+    margin-top: 90px;
+    height: 100px;
+    width: 200px;
+}
+
+#options{
+  width: 100%;
 }
