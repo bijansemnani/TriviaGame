@@ -12,10 +12,6 @@ $(document).ready(function() {
   var correctCount = 0;
   var incorrectCount = 0;
 
-
-  $("#questions").html("<button id='start' \
-    class='btn-lg btn-primary startButton'>START</button>");
-
   //function to initialize the questions array using triva api (ajax call)
   function initializeArray() {
      $.ajax({
@@ -27,8 +23,6 @@ $(document).ready(function() {
         length = questions.length;
         console.log(questions);
       });
-
-
   }
 
   //function to pick the question and print it on the screen
@@ -96,8 +90,12 @@ $(document).ready(function() {
       $("#timer").html("Time left: "+timer);
       timer--;
     }, 1000);
-    setTimeout(initialize, 1000);
+    setTimeout(initialize, 4000);
   }
+
+  //Set up the start button
+  $("#questions").html("<button id='start' \
+    class='btn-lg btn-primary startButton'>START</button>");
 
   //start the game
   $("#start").on("click", function () {
