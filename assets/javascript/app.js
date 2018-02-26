@@ -12,7 +12,9 @@ $(document).ready(function() {
   var correctCount = 0;
   var incorrectCount = 0;
 
-  initializeArray();
+
+  $("#questions").html("<button id='start' \
+    class='btn-lg btn-primary startButton'>START</button>");
 
   //function to initialize the questions array using triva api (ajax call)
   function initializeArray() {
@@ -21,11 +23,12 @@ $(document).ready(function() {
         method: "GET"
       }).then(function (response) {
         questions = response.results;
+        initialize();
+        length = questions.length;
         console.log(questions);
       });
-    length = questions.length;
-    $("#questions").html("<button id='start' \
-      class='btn-lg btn-primary startButton'>START</button>");
+
+
   }
 
   //function to pick the question and print it on the screen
@@ -93,13 +96,13 @@ $(document).ready(function() {
       $("#timer").html("Time left: "+timer);
       timer--;
     }, 1000);
-    setTimeout(initialize, 4000);
+    setTimeout(initialize, 1000);
   }
 
   //start the game
   $("#start").on("click", function () {
     intervalId = setInterval(decrement, 1000);
-    initialize();
+    initializeArray();
 
   });
 
@@ -128,6 +131,5 @@ $(document).ready(function() {
     correctCount = 0;
     incorrectCount = 0;
     initializeArray();
-    initialize();
   });
 });
