@@ -16,6 +16,12 @@ h1{
   opacity: .5;
 }
 
+input{
+  font-size: 150%;
+  height: 50px;
+  width: 150px;
+}
+
 #start{
     font-size: 40px;
     margin-top: 90px;
